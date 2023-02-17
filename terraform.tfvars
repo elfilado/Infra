@@ -13,8 +13,8 @@ app_name       = "cloudplay"
 dotnet_version = "v7.0"
 
 # DB
-db_server_name  = "vm-managerv2"
-db_login        = "dodv2o"
-db_password     = "4-v3ry-53cr37-p455w0rd"
-db_account_name = "elfiladov2"
-db_name         = "vm-databasev2"
+db_server_name = "vm-managerv2"
+db_login       = "dodv2o"
+db_password    = "4-v3ry-53cr37-pa55w0rd"
+db_name        = "vm-databasev2"
+sql_version    = "12.0"

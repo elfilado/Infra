@@ -17,7 +17,7 @@ variable "asp_name" {
 
 variable "asp_sku_name" {
   type        = string
-  description = "Sku name of the app service plan."
+  description = "The sku name of the app service plan."
 }
 
 variable "app_name" {
@@ -44,12 +44,12 @@ variable "db_password" {
   description = "The password of the database server."
 }
 
-variable "db_account_name" {
-  type        = string
-  description = "The name of the database account."
-}
-
 variable "db_name" {
   type        = string
   description = "The name of the database."
+}
+
+variable "sql_version" {
+  type        = string
+  description = "The version of SQL to be used."
 }

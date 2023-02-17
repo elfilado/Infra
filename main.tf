@@ -1,5 +1,4 @@
 # Definition des ressources Azure
-
 terraform {
   required_providers {
     azurerm = {
@@ -16,11 +15,13 @@ provider "azurerm" {
   subscription_id = "dada0207-f9c8-4fae-9cf7-ea1567b2de11"
 }
 
+# Resource Group
 resource "azurerm_resource_group" "gaming_1" {
   name     = var.rg_name
   location = var.rg_location
 }
 
+# Application Service Plan
 resource "azurerm_service_plan" "gaming_1" {
   name                = var.asp_name
   location            = azurerm_resource_group.gaming_1.location
@@ -29,6 +30,7 @@ resource "azurerm_service_plan" "gaming_1" {
   sku_name            = var.asp_sku_name
 }
 
+# Web Application
 resource "azurerm_windows_web_app" "gaming_1" {
   name                = var.app_name
   resource_group_name = azurerm_resource_group.gaming_1.name
@@ -42,11 +44,12 @@ resource "azurerm_windows_web_app" "gaming_1" {
   }
 }
 
-resource "azurerm_mssql_server" "db_server_1" {
+# SQL Server
+resource "azurerm_mssql_server" "gaming_1" {
   name                         = var.db_server_name
   resource_group_name          = azurerm_resource_group.gaming_1.name
-  location                     = azurerm_service_plan.gaming_1.location
-  version                      = "12.0"
+  location                     = azurerm_resource_group.gaming_1.location
+  version                      = var.sql_version
   administrator_login          = var.db_login
   administrator_login_password = var.db_password
 
@@ -55,21 +58,23 @@ resource "azurerm_mssql_server" "db_server_1" {
   }
 }
 
-resource "azurerm_storage_account" "db_account_1" {
-  name                     = var.db_account_name
-  resource_group_name      = azurerm_resource_group.gaming_1.name
-  location                 = azurerm_service_plan.gaming_1.location
-  account_tier             = "Standard"
-  account_replication_type = "LRS"
-}
-
-resource "azurerm_mssql_database" "db_vm" {
+# SQL Database
+resource "azurerm_mssql_database" "gaming_1" {
   name           = var.db_name
-  server_id      = azurerm_mssql_server.db_server_1.id
+  server_id      = azurerm_mssql_server.gaming_1.id
   collation      = "SQL_Latin1_General_CP1_CI_AS"
   license_type   = "LicenseIncluded"
   max_size_gb    = 1
   read_scale     = false
   sku_name       = "S0"
   zone_redundant = false
+}
+
+# The Azure feature Allow access to Azure services can be enabled by setting start_ip_address and end_ip_address to 0.0.0.0
+resource "azurerm_sql_firewall_rule" "gaming_1" {
+  name                = "FirewallRule1"
+  resource_group_name = azurerm_resource_group.gaming_1.name
+  server_name         = azurerm_sql_server.gaming_1.name
+  start_ip_address    = "0.0.0.0"
+  end_ip_address      = "0.0.0.0"
 }
